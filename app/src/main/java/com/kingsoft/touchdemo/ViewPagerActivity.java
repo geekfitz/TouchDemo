@@ -2,8 +2,9 @@ package com.kingsoft.touchdemo;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
+
+import com.kingsoft.touchdemo.view.ViewPager;
 
 import java.util.LinkedList;
 
@@ -13,10 +14,9 @@ import java.util.LinkedList;
 
 public class ViewPagerActivity extends AppCompatActivity {
 
-    private ViewPager viewPager;
-    private GeekPagerAdapter pagerAdapter;
-
-    private LinkedList<Conversation> conversations = new LinkedList<>();
+    private ViewPager mViewPager;
+    private GeekPagerAdapter mPagerAdapter;
+    private LinkedList<Conversation> mConversationList = new LinkedList<>();
 
 
     @Override
@@ -24,20 +24,33 @@ public class ViewPagerActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_view_pager);
 
-        viewPager = findViewById(R.id.viewPager);
-        pagerAdapter = new GeekPagerAdapter(getSupportFragmentManager(), conversations);
-        viewPager.setAdapter(pagerAdapter);
+        mViewPager = findViewById(R.id.viewPager);
+        mPagerAdapter = new GeekPagerAdapter(getSupportFragmentManager(), mConversationList);
+        mViewPager.setAdapter(mPagerAdapter, 0, false);
 
-
-        conversations.add(new Conversation(String.valueOf("ID: " + PagerFragment.addAndGet()), " name: "));
-        conversations.add(new Conversation(String.valueOf("ID: " + PagerFragment.addAndGet()), " name: "));
-        conversations.add(new Conversation(String.valueOf("ID: " + PagerFragment.addAndGet()), " name: "));
-        pagerAdapter.notifyDataSetChanged();
+        generateDataSet();
+        mPagerAdapter.notifyDataSetChanged();
 
     }
 
+    private void generateDataSet() {
+        PagerFragment.sIndex = 0;
+
+        mConversationList.add(new Conversation(String.valueOf("ID: " + PagerFragment.addAndGet()), " name: "));
+        mConversationList.add(new Conversation(String.valueOf("ID: " + PagerFragment.addAndGet()), " name: "));
+        mConversationList.add(new Conversation(String.valueOf("ID: " + PagerFragment.addAndGet()), " name: "));
+        mConversationList.add(new Conversation(String.valueOf("ID: " + PagerFragment.addAndGet()), " name: "));
+    }
+
+
     public void addConversation(Conversation conversation) {
-        pagerAdapter.addItem(conversation);
+//        mPagerAdapter.addFirst(conversation);
+//        mPagerAdapter.addLast(conversation);
+        mPagerAdapter.add(mViewPager.getCurrentItem(), conversation);
+    }
+
+    public void reConversation(Conversation conversation) {
+        mPagerAdapter.removeItem(conversation);
     }
 
 }

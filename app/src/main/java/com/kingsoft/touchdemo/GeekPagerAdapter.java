@@ -2,8 +2,10 @@ package com.kingsoft.touchdemo;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
-import android.support.v4.app.FragmentStatePagerAdapter;
-import android.view.ViewGroup;
+import android.support.v4.view.PagerAdapter;
+import android.util.Log;
+
+import com.kingsoft.touchdemo.view.FragmentStatePagerAdapter;
 
 import java.util.LinkedList;
 
@@ -13,6 +15,7 @@ import java.util.LinkedList;
 
 public class GeekPagerAdapter extends FragmentStatePagerAdapter {
 
+    public static final String TAG = "GeekPagerAdapter";
     private LinkedList<Conversation> conversations;
 
     public GeekPagerAdapter(FragmentManager fm, LinkedList<Conversation> conversations) {
@@ -30,6 +33,7 @@ public class GeekPagerAdapter extends FragmentStatePagerAdapter {
             conversation = conversations.get(position);
         }
         PagerFragment fragment = PagerFragment.newInstance(conversation);
+        Log.d(TAG, " getItem: " + fragment + " position: " + position);
         return fragment;
     }
 
@@ -40,19 +44,40 @@ public class GeekPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getItemPosition(Object object) {
-        return getRealPosition(object);
+        int position = getRealPosition(object);
+        if (position == -1) {
+            return PagerAdapter.POSITION_NONE;
+        } else {
+            return position;
+        }
     }
 
-    @Override
-    public void destroyItem(ViewGroup container, int position, Object object) {
-        int realPosition = getRealPosition(object);
-        super.destroyItem(container, realPosition, object);
-    }
-
-    public void addItem(Conversation conversation) {
-        conversations.addFirst(conversation);
+    public void addLast(Conversation conversation) {
+        conversations.addLast(conversation);
+        updateStateWhenAdd(conversations.size() - 1);
         notifyDataSetChanged();
     }
+
+
+    public void addFirst(Conversation conversation) {
+        conversations.addFirst(conversation);
+        updateStateWhenAdd(0);
+        notifyDataSetChanged();
+    }
+
+    public void add(int position, Conversation conversation) {
+        conversations.add(position, conversation);
+        updateStateWhenAdd(position);
+        notifyDataSetChanged();
+    }
+
+    public void removeItem(Conversation conversation) {
+        int index = conversations.indexOf(conversation);
+        conversations.remove(index);
+        updateStateWhenRemove(index);
+        notifyDataSetChanged();
+    }
+
 
     private int getRealPosition(Object object) {
         PagerFragment fragment = (PagerFragment) object;
