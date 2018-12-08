@@ -8,6 +8,7 @@ import android.util.Log;
 import com.kingsoft.touchdemo.view.FragmentStatePagerAdapter;
 
 import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Administrator on 2018/12/6.
@@ -16,11 +17,11 @@ import java.util.LinkedList;
 public class GeekPagerAdapter extends FragmentStatePagerAdapter {
 
     public static final String TAG = "GeekPagerAdapter";
-    private LinkedList<Conversation> conversations;
+    private LinkedList<Conversation> conversations = new LinkedList<>();
 
     public GeekPagerAdapter(FragmentManager fm, LinkedList<Conversation> conversations) {
         super(fm);
-        this.conversations = conversations;
+        this.conversations.addAll(conversations);
     }
 
     @Override
@@ -75,6 +76,13 @@ public class GeekPagerAdapter extends FragmentStatePagerAdapter {
         int index = conversations.indexOf(conversation);
         conversations.remove(index);
         updateStateWhenRemove(index);
+        notifyDataSetChanged();
+    }
+
+    public void swapDataSet(List<Conversation> conversations) {
+        this.conversations.clear();
+        this.conversations.addAll(conversations);
+        updateStateWhenSwap();
         notifyDataSetChanged();
     }
 

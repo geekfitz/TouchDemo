@@ -53,8 +53,25 @@
                 android:layout_height="40dp"
                 android:gravity="center"
                 android:text="delete" />
+
+            <Button
+                android:id="@+id/tvSwap"
+                android:layout_width="80dp"
+                android:layout_height="40dp"
+                android:gravity="center"
+                android:text="swap" />
         </LinearLayout>
     </LinearLayout>
+
+    <EditText
+        android:id="@+id/etPosition"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="20dp"
+        android:hint="Input position to insert"
+        android:minWidth="100dp" />
 
 
 </RelativeLayout>

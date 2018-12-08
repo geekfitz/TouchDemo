@@ -933,6 +933,11 @@ public class ViewPager extends ViewGroup {
             }
         }
 
+        // if map is null, means that current item info has invalid, we need re populate
+        if (map.isEmpty()) {
+            needPopulate = true;
+        }
+
         if (isUpdating) {
             mAdapter.finishUpdate(this);
         }

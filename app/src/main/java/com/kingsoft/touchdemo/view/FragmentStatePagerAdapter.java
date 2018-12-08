@@ -2,6 +2,7 @@ package com.kingsoft.touchdemo.view;
 
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -89,6 +90,10 @@ public abstract class FragmentStatePagerAdapter extends PagerAdapter {
     public void destroyItem(ViewGroup container, int position, Object object) {
         Fragment fragment = (Fragment) object;
 
+        // Different to destroyItem as normal, this flag indicates that the position-th data  has benn removed from
+        // dataSet permanently, so we also need remove the fragment and saveState accordingly.
+        boolean remove = fragment.getArguments() != null && fragment.getArguments().getBoolean(ARG_REMOVE_FLAG);
+
         if (mCurTransaction == null) {
             mCurTransaction = mFragmentManager.beginTransaction();
         }
@@ -98,7 +103,9 @@ public abstract class FragmentStatePagerAdapter extends PagerAdapter {
             mSavedState.add(null);
         }
 
-        if (position < mSavedState.size() && position >= 0) {
+        // if remove flag is true, as we mentioned above, it is not necessary to  call Fragment's onSaveInstanceState
+        // if call it, we will get wrong saveState when instantiate new fragment in instantiateItem.
+        if (position < mSavedState.size() && position >= 0 && !remove) {
             mSavedState.set(position, fragment.isAdded()
                     ? mFragmentManager.saveFragmentInstanceState(fragment) : null);
         }
@@ -107,11 +114,10 @@ public abstract class FragmentStatePagerAdapter extends PagerAdapter {
             mFragments.set(position, null);
         }
 
-        // Different to destroyItem  as normal, this flag indicates that the position-th data  has benn removed from
-        // dataSet permanently, so we also need remove the fragment and saveState accordingly.
-        boolean remove = fragment.getArguments().getBoolean(ARG_REMOVE_FLAG);
         if (remove) {
-            mFragments.remove(position);
+            if (position < mFragments.size() && position >= 0) {
+                mFragments.remove(position);
+            }
             mSavedState.remove(position);
         }
 
@@ -229,15 +235,32 @@ public abstract class FragmentStatePagerAdapter extends PagerAdapter {
     protected void updateStateWhenRemove(int position) {
         Log.d(TAG, " --------updateStateWhenRemove: " + position);
         Fragment fragment = mFragments.get(position);
-        Bundle bundle = new Bundle();
-        bundle.putBoolean(ARG_REMOVE_FLAG, true);
-        fragment.setArguments(bundle);
+        fragment.setArguments(getDeleteFlagBundle());
         printSaveStates();
     }
 
+    protected void updateStateWhenSwap() {
+        Log.d(TAG, " --------updateStateWhenSwap");
+        for (Fragment fragment : mFragments) {
+            if (fragment != null) {
+                fragment.setArguments(getDeleteFlagBundle());
+            }
+        }
+        mFragments.clear();
+        mSavedState.clear();
+        printSaveStates();
+    }
+
+    @NonNull
+    private Bundle getDeleteFlagBundle() {
+        Bundle bundle = new Bundle();
+        bundle.putBoolean(ARG_REMOVE_FLAG, true);
+        return bundle;
+    }
 
     private void printSaveStates() {
         Log.d(TAG, " mFragments: " + mFragments);
         Log.d(TAG, " mSavedState: " + mSavedState);
     }
+
 }

@@ -5,10 +5,12 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.EditText;
 import android.widget.TextView;
 
 
@@ -19,6 +21,7 @@ public class PagerFragment extends Fragment {
 
     private ViewPagerActivity activity;
     private TextView tvTitle, tvFragment;
+    private EditText etPosition;
 
     private static final String EXTRA_ID = "extra_id";
     public static int sIndex = 0;
@@ -59,6 +62,7 @@ public class PagerFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         tvTitle = view.findViewById(R.id.tvTitle);
         tvFragment = view.findViewById(R.id.tvFragment);
+        etPosition = view.findViewById(R.id.etPosition);
 
         TextView tvState = view.findViewById(R.id.tvState);
 
@@ -78,7 +82,12 @@ public class PagerFragment extends Fragment {
             public void onClick(View v) {
 
                 if (activity != null) {
-                    activity.addConversation(new Conversation(String.valueOf("id: " + addAndGet()), " name: "));
+                    String s = etPosition.getText().toString().trim();
+                    int position = 0;
+                    if (!TextUtils.isEmpty(s)) {
+                        position = Integer.parseInt(s);
+                    }
+                    activity.addConversation(position, new Conversation(String.valueOf("id: " + addAndGet()), " name: "));
                 }
 
             }
@@ -87,7 +96,14 @@ public class PagerFragment extends Fragment {
         view.findViewById(R.id.tvDelete).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                activity.reConversation(conversation);
+                activity.removeConversation(conversation);
+            }
+        });
+
+        view.findViewById(R.id.tvSwap).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.swapConversation();
             }
         });
 

@@ -27,14 +27,16 @@ public class ViewPagerActivity extends AppCompatActivity {
         mViewPager = findViewById(R.id.viewPager);
         mPagerAdapter = new GeekPagerAdapter(getSupportFragmentManager(), mConversationList);
         mViewPager.setAdapter(mPagerAdapter, 0, false);
+        PagerFragment.sIndex = 0;
 
         generateDataSet();
-        mPagerAdapter.notifyDataSetChanged();
+        mPagerAdapter.swapDataSet(mConversationList);
+//        mPagerAdapter.notifyDataSetChanged();
 
     }
 
     private void generateDataSet() {
-        PagerFragment.sIndex = 0;
+
 
         mConversationList.add(new Conversation(String.valueOf("ID: " + PagerFragment.addAndGet()), " name: "));
         mConversationList.add(new Conversation(String.valueOf("ID: " + PagerFragment.addAndGet()), " name: "));
@@ -46,11 +48,23 @@ public class ViewPagerActivity extends AppCompatActivity {
     public void addConversation(Conversation conversation) {
 //        mPagerAdapter.addFirst(conversation);
 //        mPagerAdapter.addLast(conversation);
-        mPagerAdapter.add(mViewPager.getCurrentItem(), conversation);
+//        mPagerAdapter.add(mViewPager.getCurrentItem(), conversation);
+
+
     }
 
-    public void reConversation(Conversation conversation) {
+    public void removeConversation(Conversation conversation) {
         mPagerAdapter.removeItem(conversation);
+    }
+
+    public void addConversation(int position, Conversation conversation) {
+        mPagerAdapter.add(position, conversation);
+    }
+
+    public void swapConversation() {
+        mConversationList.clear();
+        generateDataSet();
+        mPagerAdapter.swapDataSet(mConversationList);
     }
 
 }
