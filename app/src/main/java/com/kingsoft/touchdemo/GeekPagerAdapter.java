@@ -55,34 +55,34 @@ public class GeekPagerAdapter extends FragmentStatePagerAdapter {
 
     public void addLast(Conversation conversation) {
         conversations.addLast(conversation);
-        updateStateWhenAdd(conversations.size() - 1);
+        notifyItemInserted(conversations.size() - 1);
         notifyDataSetChanged();
     }
 
 
     public void addFirst(Conversation conversation) {
         conversations.addFirst(conversation);
-        updateStateWhenAdd(0);
+        notifyItemInserted(0);
         notifyDataSetChanged();
     }
 
     public void add(int position, Conversation conversation) {
         conversations.add(position, conversation);
-        updateStateWhenAdd(position);
+        notifyItemInserted(position);
         notifyDataSetChanged();
     }
 
     public void removeItem(Conversation conversation) {
         int index = conversations.indexOf(conversation);
         conversations.remove(index);
-        updateStateWhenRemove(index);
+        notifyItemRemoved(index);
         notifyDataSetChanged();
     }
 
     public void swapDataSet(List<Conversation> conversations) {
         this.conversations.clear();
         this.conversations.addAll(conversations);
-        updateStateWhenSwap();
+        notifyDataSetSwapped();
         notifyDataSetChanged();
     }
 

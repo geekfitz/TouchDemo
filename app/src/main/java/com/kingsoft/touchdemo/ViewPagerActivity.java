@@ -2,9 +2,9 @@ package com.kingsoft.touchdemo;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 
-import com.kingsoft.touchdemo.view.ViewPager;
 
 import java.util.LinkedList;
 
@@ -26,11 +26,13 @@ public class ViewPagerActivity extends AppCompatActivity {
 
         mViewPager = findViewById(R.id.viewPager);
         mPagerAdapter = new GeekPagerAdapter(getSupportFragmentManager(), mConversationList);
-        mViewPager.setAdapter(mPagerAdapter, 0, false);
+        mViewPager.setAdapter(mPagerAdapter);
         PagerFragment.sIndex = 0;
 
         generateDataSet();
         mPagerAdapter.swapDataSet(mConversationList);
+        mViewPager.setCurrentItem(3);
+//        mViewPager.setOffscreenPageLimit(2);
 //        mPagerAdapter.notifyDataSetChanged();
 
     }
